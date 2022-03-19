@@ -95,8 +95,8 @@ function generateOneNumber(){
         }
     }
 
-    // 随机一个数字
-    var randNumber=Math.random()<0.5?2:4;
+    // 随机一个数字,其中人为规定出2的概率为0.9,出4的概率为0.1
+    var randNumber=Math.random()<0.9?2:4;
 
     // 在随机位置显示随机数字
     board[randx][randy]=randNumber;
