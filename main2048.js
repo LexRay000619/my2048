@@ -10,15 +10,16 @@ function newgame(){
     // 初始化棋盘格
     init();
     //在随机两个格子生成数字
-    generateOneNumber();
-    generateOneNumber();
+    generateOneNumber(board);
+    generateOneNumber(board);
 }
 
 function init(){
     for(var i=0;i<4;i++){
         for(var j=0;j<4;j++){
-            
+            // gridCell用于获取小格子元素,通过id来依次获取不同格子
             var gridCell=$('#grid-cell-'+i+"-"+j);
+            // 根据i和j的值,计算小格子相应的top和left值
             gridCell.css('top',getPosTop(i,j));
             gridCell.css('left',getPosLeft(i,j));
         }
@@ -110,25 +111,25 @@ $(document).keydown(function(event){
         case 37:
             if(moveLeft()){
                 setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover()",300);
+                setTimeout("isgameover(board)",300);
             }
             break;
         case 38:
             if(moveUp()){
                 setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover()",300);
+                setTimeout("isgameover(board)",300);
             }
             break;
         case 39:
             if(moveRight()){
                 setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover()",300);
+                setTimeout("isgameover(board)",300);
             }
             break;
         case 40:
             if(moveDown()){
                 setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover()",300);
+                setTimeout("isgameover(board)",300);
             }
             break;
         default:
@@ -136,10 +137,12 @@ $(document).keydown(function(event){
     }
 });
 
-function isgameover(){
+function isgameover(board){
     if(!(canMoveLeft(board) || canMoveUp(board) || canMoveRight(board) || canMoveDown(board))){
-        gameover();
+        // gameover();
+        return true;
     }
+    return false;
 }
 
 function gameover(){
@@ -178,7 +181,8 @@ function moveLeft(){
             }
         }
     }
-    setTimeout("updateBoardView()", 200);
+    updateBoardView();
+    // setTimeout("updateBoardView()", 200);
     return true;
 }
 
@@ -215,7 +219,8 @@ function moveUp(){
             }
         }
     }
-    setTimeout("updateBoardView()", 200);
+    updateBoardView();
+    // setTimeout("updateBoardView()", 200);
     return true;
 }
 
@@ -252,7 +257,8 @@ function moveRight(){
             }
         }
     }
-    setTimeout("updateBoardView()", 200);
+    updateBoardView();
+    // setTimeout("updateBoardView()", 200);
     return true;
 }
 
@@ -289,6 +295,8 @@ function moveDown(){
             }
         }
     }
-    setTimeout("updateBoardView()", 200);
+    updateBoardView();
+    // setTimeout("updateBoardView()", 200);
     return true;
 }
+

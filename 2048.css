@@ -10,12 +10,13 @@ header h1{
     font-weight: bold;
 
 }
-header #newgamebutton{
-    display:block;
+header a{
+    display:inline;
     margin: 20px auto;
 
     width: 100px;
-    padding: 10px 10px;
+    margin:0px 50px;
+    padding: 10px 20px;
     background-color: #8f7a66;
 
     font-family: Arial;
@@ -25,7 +26,7 @@ header #newgamebutton{
 
     text-decoration: none;
 }
-header #newgamebutton:hover{
+header a:hover{
     background-color: #9f8b77;
 }
 header p{
@@ -40,16 +41,18 @@ header p{
 
     margin:0px auto;
     background-color: #bbada0;
-
+    /* 盒子的边角显示为圆角，半径为10像素 */
     border-radius: 10px;
+    /* 将盒子设置为相对定位，作为16个小格子的容器，小格子是绝对定位 */
     position:relative;
 }
 .grid-cell{
     width: 100px;
     height: 100px;
+    /* 小格子四个角为圆角，半径6像素 */
     border-radius: 6px;
     background-color: #ccc0b3;
-
+    /* 小格子设置为绝对定位，其父容器为grid-container，小格子的具体位置 */
     position: absolute;
 }
 .number-cell{
