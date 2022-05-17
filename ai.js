@@ -1,81 +1,91 @@
 var initialVirtualBoard=new Array();
 var virtualBoard=new Array();
 var hasConflictedVirtually=new Array();
-var leftScore,rightScore,upScore,downScore,testScore;
+var leftScore,rightScore,upScore,downScore,testScore,maxTestScore;
 
-function AI(){
-    alert("测试AI算法是否开始执行");
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+ async function AI() {
     // 总循环,AI会一直运行下去,直到游戏结束
-    while(!isgameover(board)){
+    while (!isgameover(board)) {
         // 先进行随机模拟,决定下一步的真实决策
-        leftScore=rightScore=upScore=downScore=0;
-        if(canMoveLeft(board)){
-            for(var i=0;i<4;i++){
-                initialVirtualBoard[i]=board[i].concat([]);
-                hasConflictedVirtually[i]=hasConflicted[i].concat([]);
+        leftScore = rightScore = upScore = downScore = 0;
+        if (canMoveLeft(board)) {
+            for (var i = 0; i < 4; i++) {
+                initialVirtualBoard[i] = board[i].concat([]);
+                hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
             // 初始化向左移动一步之前总分为0,并向左移动一次
-            testScore=0;
+            testScore = 0;
             moveLeftInMemory(initialVirtualBoard);
-            for(var i=0;i<1000;i++){
+            for (var i = 0; i < 1000; i++) {
                 // 向左移动一次之后,进行100场模拟游戏
-                for(var k=0;k<4;k++){
-                    virtualBoard[k]=initialVirtualBoard[k].concat([]);
+                for (var k = 0; k < 4; k++) {
+                    virtualBoard[k] = initialVirtualBoard[k].concat([]);
                 }
                 randomGamePlay(virtualBoard);
 
             }
-            leftScore=testScore
+            leftScore = testScore
         }
-        if(canMoveRight(board)){
-            for(var i=0;i<4;i++){
-                initialVirtualBoard[i]=board[i].concat([]);
-                hasConflictedVirtually[i]=hasConflicted[i].concat([]);
+        if (canMoveRight(board)) {
+            for (var i = 0; i < 4; i++) {
+                initialVirtualBoard[i] = board[i].concat([]);
+                hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
-            testScore=0;
+            testScore = 0;
             moveRightInMemory(initialVirtualBoard);
-            for(var i=0;i<1000;i++){
-                for(var k=0;k<4;k++){
-                    virtualBoard[k]=initialVirtualBoard[k].concat([]);
+            for (var i = 0; i < 1000; i++) {
+                for (var k = 0; k < 4; k++) {
+                    virtualBoard[k] = initialVirtualBoard[k].concat([]);
                 }
                 randomGamePlay(virtualBoard);
             }
-            rightScore=testScore;
+            rightScore = testScore;
         }
-        if(canMoveUp(board)){
-            for(var i=0;i<4;i++){
-                initialVirtualBoard[i]=board[i].concat([]);
-                hasConflictedVirtually[i]=hasConflicted[i].concat([]);
+        if (canMoveUp(board)) {
+            for (var i = 0; i < 4; i++) {
+                initialVirtualBoard[i] = board[i].concat([]);
+                hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
-            testScore=0;
+            testScore = 0;
             moveUpInMemory(initialVirtualBoard);
-            for(var i=0;i<1000;i++){
-                for(var k=0;k<4;k++){
-                    virtualBoard[k]=initialVirtualBoard[k].concat([]);
+            for (var i = 0; i < 1000; i++) {
+                for (var k = 0; k < 4; k++) {
+                    virtualBoard[k] = initialVirtualBoard[k].concat([]);
                 }
                 randomGamePlay(virtualBoard);
             }
-            upScore=testScore;
+            upScore = testScore;
         }
-        if(canMoveDown(board)){
-            for(var i=0;i<4;i++){
-                initialVirtualBoard[i]=board[i].concat([]);
-                hasConflictedVirtually[i]=hasConflicted[i].concat([]);
+        if (canMoveDown(board)) {
+            for (var i = 0; i < 4; i++) {
+                initialVirtualBoard[i] = board[i].concat([]);
+                hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
-            testScore=0;
+            testScore = 0;
             moveDownInMemory(initialVirtualBoard);
-            for(var i=0;i<1000;i++){
-                for(var k=0;k<4;k++){
-                    virtualBoard[k]=initialVirtualBoard[k].concat([]);
+            for (var i = 0; i < 1000; i++) {
+                for (var k = 0; k < 4; k++) {
+                    virtualBoard[k] = initialVirtualBoard[k].concat([]);
                 }
                 randomGamePlay(virtualBoard);
             }
-            downScore=testScore;
+            downScore = testScore;
         }
+        move();
+        await sleep(500);
+        console.log(JSON.parse(JSON.stringify(board)));
+        console.log("score = " + score);
+    }
 
-        // 选出下一步的方案,在真实的页面中执行,更新所有数据,本次循环结束
-        var maxTestScore=Math.max(leftScore,rightScore,upScore,downScore);
-        switch(maxTestScore){
+    
+}
+async function move() { 
+    maxTestScore = Math.max(leftScore, rightScore, upScore, downScore);
+        switch (maxTestScore) {
             case leftScore:
                 moveLeft();
                 generateOneNumber();
@@ -95,14 +105,11 @@ function AI(){
             default:
                 break;
         }
-
-        console.log(JSON.parse(JSON.stringify(board)));
-        console.log("score = "+score);
-
-    }
-
-    alert("游戏结束!");
 }
+
+
+
+
 function moveLeftInMemory(virtualBoard){
     // 进入这个函数，说明当前状态下一定可以向左移动，该函数只处理虚拟数组，因此不必指定参数
     for(var i=0;i<4;i++){

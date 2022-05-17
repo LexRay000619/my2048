@@ -5,6 +5,14 @@ var hasConflicted=new Array();
 $(document).ready(function(){
     newgame();
 });
+function AII() { 
+    window.requestAnimationFrame(function () {
+    AIbutton.click(function () { 
+         AI();
+    })
+  });
+}
+
 
 function newgame(){
     // 初始化棋盘格
@@ -110,26 +118,26 @@ $(document).keydown(function(event){
     switch(event.keyCode){
         case 37:
             if(moveLeft()){
-                setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover(board)",300);
+                setTimeout(generateOneNumber(),210);
+                setTimeout(isgameover(board),300);
             }
             break;
         case 38:
             if(moveUp()){
-                setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover(board)",300);
+                setTimeout(generateOneNumber(),210);
+                setTimeout(isgameover(board),300);
             }
             break;
         case 39:
             if(moveRight()){
-                setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover(board)",300);
+                setTimeout(generateOneNumber(),210);
+                setTimeout(isgameover(board),300);
             }
             break;
         case 40:
             if(moveDown()){
-                setTimeout("generateOneNumber()",210);
-                setTimeout("isgameover(board)",300);
+                setTimeout(generateOneNumber(),210);
+                setTimeout(isgameover(board),300);
             }
             break;
         default:
@@ -182,7 +190,7 @@ function moveLeft(){
         }
     }
     updateBoardView();
-    // setTimeout("updateBoardView()", 200);
+    setTimeout(updateBoardView(), 1000/60);
     return true;
 }
 
@@ -220,7 +228,7 @@ function moveUp(){
         }
     }
     updateBoardView();
-    // setTimeout("updateBoardView()", 200);
+    setTimeout(updateBoardView(), 1000/60);
     return true;
 }
 
@@ -258,7 +266,7 @@ function moveRight(){
         }
     }
     updateBoardView();
-    // setTimeout("updateBoardView()", 200);
+    setTimeout(updateBoardView(), 1000/60);
     return true;
 }
 
@@ -296,7 +304,7 @@ function moveDown(){
         }
     }
     updateBoardView();
-    // setTimeout("updateBoardView()", 200);
+    setTimeout(updateBoardView(), 1000/60);
     return true;
 }
 
