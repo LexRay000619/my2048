@@ -1,7 +1,8 @@
+//获取当前格子离顶有多少像素
 function getPosTop(i,j){
     return 20+i*120;
 }
-
+//获取当前格子离左边有多少像素
 function getPosLeft(i,j){
     return 20+j*120;
 }
@@ -25,7 +26,7 @@ function getNumberBackgroundColor(number){
 
     return "black";
 }
-
+//数字的颜色
 function getNumberColor(number){
     if(number<=4){
         return "#776e65";
@@ -33,11 +34,11 @@ function getNumberColor(number){
     
     return "white";
 }
-
+//判断棋盘格是否还有空间
 function nospace(board){
-    for(var i=0;i<4;i++){
-        for(var j=0;j<4;j++){
-            if(board[i][j]==0){
+    for(let i=0;i<4;i++){
+        for(let j=0;j<4;j++){
+            if(board[i][j]===0){
                 return false;
             }
         }
@@ -46,10 +47,12 @@ function nospace(board){
 }
 
 function canMoveLeft(board){
-    for(var i=0;i<4;i++){
-        for(var j=1;j<4;j++){
-            if(board[i][j]!=0){
-                if(board[i][j-1]==0 | board[i][j-1]==board[i][j]){
+    for(let i=0;i<4;i++){
+        //最左边一列不用判断
+        for(let j=1;j<4;j++){
+            if(board[i][j]!==0){
+                //若左边没有数字，或者左边的数字和自己相等则可以移动
+                if(board[i][j-1]===0 || board[i][j-1]===board[i][j]){
                     return true;
                 }
             }
@@ -58,10 +61,10 @@ function canMoveLeft(board){
     return false;
 }
 function canMoveUp(board){
-    for(var i=1;i<4;i++){
-        for(var j=0;j<4;j++){
-            if(board[i][j]!=0){
-                if(board[i-1][j]==0 | board[i-1][j]==board[i][j]){
+    for(let i=1; i<4; i++){
+        for(let j=0; j<4; j++){
+            if(board[i][j]!==0){
+                if(board[i-1][j]===0 || board[i-1][j]===board[i][j]){
                     return true;
                 }
             }
@@ -70,10 +73,10 @@ function canMoveUp(board){
     return false;
 }
 function canMoveRight(board){
-    for(var i=0;i<4;i++){
-        for(var j=0;j<3;j++){
-            if(board[i][j]!=0){
-                if(board[i][j+1]==0 | board[i][j+1]==board[i][j]){
+    for(let i=0;i<4;i++){
+        for(let j=0;j<3;j++){
+            if(board[i][j]!==0){
+                if(board[i][j+1]===0 || board[i][j+1]===board[i][j]){
                     return true;
                 }
             }
@@ -82,10 +85,10 @@ function canMoveRight(board){
     return false;
 }
 function canMoveDown(board){
-    for(var i=0;i<3;i++){
-        for(var j=0;j<4;j++){
-            if(board[i][j]!=0){
-                if(board[i+1][j]==0 | board[i+1][j]==board[i][j]){
+    for(let i=0;i<3;i++){
+        for(let j=0;j<4;j++){
+            if(board[i][j]!==0){
+                if(board[i+1][j]===0 || board[i+1][j]===board[i][j]){
                     return true;
                 }
             }
@@ -94,9 +97,10 @@ function canMoveDown(board){
     return false;
 }
 
+//检查左右方向的两个格子之间中间是否有障碍物
 function noBlockHorizontal(row,col1,col2,board){
-    for(var i=col1+1;i<col2;i++){
-        if(board[row][i]!=0){
+    for(let i=col1+1;i<col2;i++){
+        if(board[row][i]!==0){
             return false;
         }
     }
@@ -104,8 +108,8 @@ function noBlockHorizontal(row,col1,col2,board){
 }
 
 function noBlockVertical(row1,row2,col,board){
-    for(var i=row1+1;i<row2;i++){
-        if(board[i][col]!=0){
+    for(let i=row1+1;i<row2;i++){
+        if(board[i][col]!==0){
             return false;
         }
     }
