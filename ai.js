@@ -1,8 +1,9 @@
 let initialVirtualBoard = [];
 let virtualBoard = [];
 let hasConflictedVirtually = [];
-let leftScore, rightScore, upScore, downScore, testScore, maxTestScore;
 let isStop = true;
+let stepNum;
+let stepUp, stepDown, stepRight, stepLeft;
 
 function stop1() {
     isStop = false;
@@ -15,22 +16,23 @@ function sleep(ms) {
 async function AI() {
     let k;
     let i;
+
 // 总循环,AI会一直运行下去,直到游戏结束
     isStop = true;
-
     while (!isgameoverAI(board)) {
         if (isStop === false) {
             return;
         }
         // 先进行随机模拟,决定下一步的真实决策
-        leftScore = rightScore = upScore = downScore = 0;
+        stepUp = stepDown = stepLeft = stepRight = 0;
+
         if (canMoveLeft(board)) {
             for (i = 0; i < 4; i++) {
                 initialVirtualBoard[i] = board[i].concat([]);
                 hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
             // 初始化向左移动一步之前总分为0,并向左移动一次
-            testScore = 0;
+            stepNum = 0;
             moveLeftInMemory(initialVirtualBoard);
             for (i = 0; i < 1000; i++) {
                 // 向左移动一次之后,进行100场模拟游戏
@@ -40,14 +42,14 @@ async function AI() {
                 randomGamePlay(virtualBoard);
 
             }
-            leftScore = testScore
+            stepLeft = stepNum;
         }
         if (canMoveRight(board)) {
             for (i = 0; i < 4; i++) {
                 initialVirtualBoard[i] = board[i].concat([]);
                 hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
-            testScore = 0;
+            stepNum = 0;
             moveRightInMemory(initialVirtualBoard);
             for (i = 0; i < 1000; i++) {
                 for (k = 0; k < 4; k++) {
@@ -55,14 +57,14 @@ async function AI() {
                 }
                 randomGamePlay(virtualBoard);
             }
-            rightScore = testScore;
+            stepRight = stepNum;
         }
         if (canMoveUp(board)) {
             for (i = 0; i < 4; i++) {
                 initialVirtualBoard[i] = board[i].concat([]);
                 hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
-            testScore = 0;
+            stepNum = 0;
             moveUpInMemory(initialVirtualBoard);
             for (i = 0; i < 1000; i++) {
                 for (k = 0; k < 4; k++) {
@@ -70,14 +72,14 @@ async function AI() {
                 }
                 randomGamePlay(virtualBoard);
             }
-            upScore = testScore;
+            stepUp = stepNum;
         }
         if (canMoveDown(board)) {
             for (i = 0; i < 4; i++) {
                 initialVirtualBoard[i] = board[i].concat([]);
                 hasConflictedVirtually[i] = hasConflicted[i].concat([]);
             }
-            testScore = 0;
+            stepNum = 0;
             moveDownInMemory(initialVirtualBoard);
             for (i = 0; i < 1000; i++) {
                 for (k = 0; k < 4; k++) {
@@ -85,40 +87,40 @@ async function AI() {
                 }
                 randomGamePlay(virtualBoard);
             }
-            downScore = testScore;
+            stepDown = stepNum;
+
         }
+
         await move();
         await sleep(500);
-        console.log(JSON.parse(JSON.stringify(board)));
-        console.log("score = " + score);
     }
 }
 
-
 async function move() {
-    maxTestScore = Math.max(leftScore, rightScore, upScore, downScore);
-    switch (maxTestScore) {
-        case leftScore:
+
+    let maxStepNum = Math.max(stepLeft, stepRight, stepUp, stepDown);
+    switch (maxStepNum) {
+        case stepLeft:
             moveLeft();
             generateOneNumber();
             break;
-        case rightScore:
+        case stepRight:
             moveRight();
             generateOneNumber();
             break;
-        case upScore:
+        case stepUp:
             moveUp();
             generateOneNumber();
             break;
-        case downScore:
+        case stepDown:
             moveDown();
             generateOneNumber();
             break;
         default:
             break;
     }
-}
 
+}
 
 function moveLeftInMemory(virtualBoard) {
     let i, j, k;
@@ -133,7 +135,6 @@ function moveLeftInMemory(virtualBoard) {
                     } else if (virtualBoard[i][k] === virtualBoard[i][j] && noBlockHorizontal(i, k, j, virtualBoard) && !hasConflictedVirtually[i][k]) {
                         virtualBoard[i][k] += virtualBoard[i][j];
                         virtualBoard[i][j] = 0;
-                        testScore += virtualBoard[i][k];
                         hasConflictedVirtually[i][k] = true;
                     }
                 }
@@ -161,7 +162,6 @@ function moveUpInMemory(virtualBoard) {
                     } else if (virtualBoard[k][j] === virtualBoard[i][j] && noBlockVertical(k, i, j, virtualBoard) && !hasConflictedVirtually[k][j]) {
                         virtualBoard[k][j] += virtualBoard[i][j];
                         virtualBoard[i][j] = 0;
-                        testScore += virtualBoard[k][j];
                         hasConflictedVirtually[k][j] = true;
                     }
                 }
@@ -188,7 +188,6 @@ function moveRightInMemory(virtualBoard) {
                     } else if (virtualBoard[i][k] === virtualBoard[i][j] && noBlockHorizontal(i, j, k, virtualBoard) && !hasConflictedVirtually[i][k]) {
                         virtualBoard[i][k] += virtualBoard[i][j];
                         virtualBoard[i][j] = 0;
-                        testScore += virtualBoard[i][k];
                         hasConflictedVirtually[i][k] = true;
                     }
                 }
@@ -215,7 +214,6 @@ function moveDownInMemory(virtualBoard) {
                     } else if (virtualBoard[k][j] === virtualBoard[i][j] && noBlockVertical(i, k, j, virtualBoard) && !hasConflictedVirtually[k][j]) {
                         virtualBoard[k][j] += virtualBoard[i][j];
                         virtualBoard[i][j] = 0;
-                        testScore += virtualBoard[k][j];
                         hasConflictedVirtually[k][j] = true;
                     }
                 }
@@ -279,23 +277,29 @@ function randomGamePlay(virtualBoard) {
             case 0:
                 if (canMoveLeft(virtualBoard)) {
                     moveLeftInMemory(virtualBoard);
+                    stepNum++;
                 }
                 break;
             case 1:
                 if (canMoveRight(virtualBoard)) {
                     moveRightInMemory(virtualBoard);
+                    stepNum++;
                 }
                 break;
             case 2:
                 if (canMoveUp(virtualBoard)) {
                     moveUpInMemory(virtualBoard);
+                    stepNum++;
                 }
                 break;
             case 3:
                 if (canMoveDown(virtualBoard)) {
                     moveDownInMemory(virtualBoard);
+                    stepNum++;
                 }
                 break;
         }
     }
 }
+
+
